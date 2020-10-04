@@ -1,0 +1,6 @@
+env
+*.pem
+config.json
+__pycache__
+*.db
+.vscode/
