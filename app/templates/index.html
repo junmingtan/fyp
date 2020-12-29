@@ -27,7 +27,7 @@
     thisForm.addEventListener('submit', async function (e) {
         e.preventDefault();
         const formData = new FormData(thisForm).entries()
-        const response = await fetch('http://localhost:80/submit', {
+        const response = await fetch('http://192.168.203.1/submit', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(Object.fromEntries(formData))
