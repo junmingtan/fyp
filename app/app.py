@@ -1,4 +1,5 @@
-from flask import Flask, jsonify, render_template, request
+import os
+from flask import Flask, jsonify, render_template, request, make_response, send_from_directory
 
 application = Flask(__name__)
 
@@ -12,12 +13,18 @@ def health():
     """
     return jsonify(success=True, status='Happy!')
 
+@application.route('/favicon.ico')
+def favicon():
+        return send_from_directory(os.path.join(application.root_path, 'static'), 'favicon.ico',mimetype='image/vnd.microsoft.icon')
+
 @application.route('/', methods=['GET'])
 def home():
     return render_template("index.html")
 
-@application.route('/submit', methods=['POST'])
+@application.route('/submit', methods=['POST', 'OPTIONS'])
 def submit():
+    if request.method == "OPTIONS": # CORS preflight
+            return _build_cors_prelight_response()
     data = request.json
     question = data["question"]
     db.append(question)
@@ -36,7 +43,19 @@ def display():
 
 @application.route('/questions', methods=['GET'])
 def questions():
-    return jsonify(db)
+    return _corsify_actual_response(jsonify(db))
+
+def _build_cors_prelight_response():
+    response = make_response()
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    response.headers.add('Access-Control-Allow-Headers', "*")
+    response.headers.add('Access-Control-Allow-Methods', "*")
+    return response
+
+def _corsify_actual_response(json):
+    response=make_response(json)
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    return response
 
 # run the app.
 if __name__ == "__main__":
