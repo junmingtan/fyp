@@ -1,5 +1,6 @@
 import os
 from flask import Flask, jsonify, render_template, request, make_response, send_from_directory
+from cassandra import cassandra
 
 application = Flask(__name__)
 
@@ -28,6 +29,7 @@ def submit():
     data = request.json
     question = data["question"]
     db.append(question)
+    cassandra.create_question(question)
     print(db)
     return jsonify(success=True)
 
@@ -43,7 +45,8 @@ def display():
 
 @application.route('/questions', methods=['GET'])
 def questions():
-    return _corsify_actual_response(jsonify(db))
+    questions = cassandra.get_questions()
+    return _corsify_actual_response(jsonify(questions))
 
 def _build_cors_prelight_response():
     response = make_response()
