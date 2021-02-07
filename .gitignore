@@ -3,5 +3,7 @@ env
 config.json
 __pycache__
 *.db
+*.img
+*.DS_STORE
 .vscode/
-.DS_Store
+.DS_Store 
