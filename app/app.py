@@ -1,10 +1,8 @@
 import os
 from flask import Flask, jsonify, render_template, request, make_response, send_from_directory
-from cassandra import cassandra
+from db import cassandra
 
 application = Flask(__name__)
-
-db = []
 
 @application.route('/health', methods=['GET'])
 def health():
@@ -28,15 +26,11 @@ def submit():
             return _build_cors_prelight_response()
     data = request.json
     question = data["question"]
-    db.append(question)
     cassandra.create_question(question)
-    print(db)
     return jsonify(success=True)
 
 @application.route('/clear', methods=['GET'])
 def clear():
-    db.clear()
-    print(db)
     return jsonify(success=True)
 
 @application.route('/display', methods=['GET'])
