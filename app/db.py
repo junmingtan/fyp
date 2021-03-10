@@ -1,4 +1,5 @@
 from cassandra.cluster import Cluster
+import time
 
 class Casssandra:
     def __init__(self):
@@ -19,7 +20,15 @@ class Casssandra:
             INSERT INTO users (userid, email, name)
             VALUES (%s, %s, %s)
             """,
-            (uuid.uuid1(), 'email', question)
+            qid = str(time.time()).replace('.', '')
+            (qid, 'user', question)
+        )
+
+    def clear_questions(self):
+        self.session.execute(
+            """
+            TRUNCATE users
+            """
         )
 
 cassandra = Casssandra()

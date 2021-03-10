@@ -31,6 +31,7 @@ def submit():
 
 @application.route('/clear', methods=['GET'])
 def clear():
+    cassandra.clear_questions()
     return jsonify(success=True)
 
 @application.route('/display', methods=['GET'])
